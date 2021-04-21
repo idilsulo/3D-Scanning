@@ -1,0 +1,13 @@
+Welcome to the 3D Scanning & Motion Capture exercise!
+Student A has 4 passed and 1 borderline exercises.
+Student A gets the bonus!
+Sorted grade list: 
+- 1
+- 1.3
+- 1.7
+- 2
+- 2
+- 2.3
+- 2.7
+- 3.3
+- 4
