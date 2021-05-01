@@ -1,0 +1,13 @@
+COFF
+# numVertices numFaces numEdges
+4 2 0
+# list of vertices
+# X Y Z R G B A
+0.0 1.0 0.0 255 255 255 255
+0.0 0.0 0.0 255 255 255 255
+1.0 0.0 0.0 255 255 255 255
+1.0 1.0 0.0 255 255 255 255
+# list of faces
+# nVerticesPerFace idx0 idx1 idx2 ...
+3 0 1 2
+3 0 2 3
