@@ -209,12 +209,15 @@ int main()
                     float y = depth * h;
 
                     // Scale the screen space coordinates (u, v) by depth
-                    Vector3f pinhole_coord = Vector3f(x, y, depth);
+                    Vector4f pinhole_coord = Vector4f(x, y, depth, 1);
 
-                    Matrix3f depthIntrinsicsInv = depthIntrinsics.inverse();
-                    MatrixXf identity = MatrixXf::Identity(4,3);
-
-                    Vector4f real_coord = trajectoryInv * depthExtrinsicsInv * identity * depthIntrinsicsInv * pinhole_coord;
+                    Matrix4f depthIntrinsicsInv = MatrixXf::Identity(4, 4);
+                    depthIntrinsicsInv(0, 0) = 1 / fX;
+                    depthIntrinsicsInv(1, 1) = 1 / fY;
+                    depthIntrinsicsInv(0, 2) = -cX / fX;
+                    depthIntrinsicsInv(1, 2) = -cY / fY;
+                    
+                    Vector4f real_coord = trajectoryInv * depthExtrinsicsInv * depthIntrinsicsInv * pinhole_coord;
                     real_coord[3] = 1.0;
 
                     vertices[index].position = real_coord;
