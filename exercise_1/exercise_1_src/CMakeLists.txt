@@ -1,21 +1,14 @@
 cmake_minimum_required(VERSION 3.6)
 
-# Comment configuration types
 set(CMAKE_CONFIGURATION_TYPES Debug Release CACHE TYPE INTERNAL FORCE)
-
-# Install destination for eigen
-# SET(CMAKE_INSTALL_PREFIX /Users/idil/Desktop/SS21/3DScanning/Exercise_1/eigen)
 
 project(exercise_01)
 
-
 # Options
-# set(LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../libs CACHE PATH "Path to lib folder")
-set(LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libs)
-
-# Set eigen3 include directory path
-# set(Eigen3_INCLUDE_DIR ${LIBRARY_DIR}/Eigen/ CACHE PATH "Path to Eigen source folder")
-set(Eigen3_INCLUDE_DIR "/usr/local/include/eigen3/")
+set(LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../libs CACHE PATH "Path to lib folder")
+#set(Eigen3_INCLUDE_DIR ${LIBRARY_DIR}/Eigen/ CACHE PATH "Path to Eigen source folder")
+# TODO: this is where my local eigen library is located, write a global sentence.
+set(Eigen3_INCLUDE_DIR "/usr/local/include/eigen3")
 
 # Use pre-compiled libraries on Windows
 if(WIN32)
@@ -23,11 +16,9 @@ if(WIN32)
     set(FreeImage_LIBRARY_DIR ${LIBRARY_DIR}/FreeImage/x64/ CACHE PATH "Path to FreeImage .lib/.dll folder")
 endif(WIN32)
 
-set(FreeImage_INCLUDE_DIR ${LIBRARY_DIR}/FreeImage/Source/)
-
-
 # Set C++ flags
 set(CMAKE_CXX_STANDARD 14)
+
 
 set(HEADERS 
     Eigen.h
@@ -40,13 +31,10 @@ set(SOURCES
     FreeImageHelper.cpp
 )
 
-#add_compile_options(-lfreeimage)
-
-#link_directories(${FreeImage_LIBRARY_DIR})
+link_directories(${FreeImage_LIBRARY_DIR})
 add_executable(exercise_01 ${HEADERS} ${SOURCES})
 target_include_directories(exercise_01 PUBLIC ${Eigen3_INCLUDE_DIR} ${FreeImage_INCLUDE_DIR})
-#target_link_libraries(exercise_01 general freeimage)
-target_link_libraries(exercise_01 /usr/local/lib/libfreeimage.dylib)
+target_link_libraries(exercise_01 general freeimage)
 
 # Visual Studio properties
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT exercise_01)

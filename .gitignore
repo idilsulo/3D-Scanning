@@ -190,3 +190,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# ignore .off files
+*mesh*.off
+*.mlp
+exercise_1/data/

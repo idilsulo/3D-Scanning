@@ -21,125 +21,165 @@ struct Vertex
 struct Face
 {
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    unsigned int v1_idx;
+    unsigned int v2_idx;
+    unsigned int v3_idx;
 
-    Vertex v1;
-    int v1_id;
-    Vertex v2;
-    int v2_id;
-    Vertex v3;
-    int v3_id;
-
-    Face(Vertex v1, int v1_id, Vertex v2, int v2_id, Vertex v3, int v3_id){
-        this->v1 = v1;
-        this->v2 = v2;
-        this->v3 = v3;
-        this->v1_id = v1_id;
-        this->v2_id = v2_id;
-        this->v3_id = v3_id;
+    Face(unsigned int v1_idx, unsigned int v2_idx, unsigned int v3_idx)
+    {
+        this->v1_idx = v1_idx;
+        this->v2_idx = v2_idx;
+        this->v3_idx = v3_idx;
     }
-
 };
 
-bool isValidVertex(Vertex v){
-    // Check if the vertex position is valid
-    if(v.position[0] == MINF || v.position[1] == MINF || v.position[2] == MINF || v.position[3] == MINF){
-        return false;
-    }
-    return true;
-}
 
-bool isValidTriangle(Vector4f v1, Vector4f v2, Vector4f v3, float edge_threshold){
-    // Check if the edges formed by using the provided vertices have an edge length
-    // strictly smaller than the edge threshold by using L2 norm
+bool WriteMesh(Vertex* vertices, unsigned int width, unsigned int height, const std::string& filename) {
+    //std::cout << "width: " << width << ", height: " << height << std::endl;
+    float edgeThreshold = 0.01f; // 1cm
 
-    // Check if this norm can be used for MINF
-    if (((v1-v2).norm() < edge_threshold) && ((v1-v3).norm() < edge_threshold) && ((v2-v3).norm() < edge_threshold)){
-        return true;
-    }
-    return false;
-}
+    // TODO 2: use the OFF file format to save the vertices grid (http://www.geomview.org/docs/html/OFF.html)
+    // - have a look at the "off_sample.off" file to see how to store the vertices and triangles
+    // - for debugging we recommend to first only write out the vertices (set the number of faces to zero)
+    // - for simplicity write every vertex to file, even if it is not valid (position.x() == MINF) (note that all vertices in the off file have to be valid, thus, if a point is not valid write out a dummy point like (0,0,0))
+    // - use a simple triangulation exploiting the grid structure (neighboring vertices build a triangle, two triangles per grid cell)
+    // - you can use an arbitrary triangulation of the cells, but make sure that the triangles are consistently oriented
+    // - only write triangles with valid vertices and an edge length smaller then edgeThreshold
 
-bool WriteMesh(Vertex* vertices, unsigned int width, unsigned int height, const std::string& filename)
-{
-	float edgeThreshold = 0.01f; // 1cm
-
-	// TODO 2: use the OFF file format to save the vertices grid (http://www.geomview.org/docs/html/OFF.html)
-	// - have a look at the "off_sample.off" file to see how to store the vertices and triangles
-	// - for debugging we recommend to first only write out the vertices (set the number of faces to zero)
-    //	// - for simplicity write every vertex to file, even if it is not valid (position.x() == MINF) (note that all vertices in the off file have to be valid, thus, if a point is not valid write out a dummy point like (0,0,0))
-    //	// - use a simple triangulation exploiting the grid structure (neighboring vertices build a triangle, two triangles per grid cell)
-	// - you can use an arbitrary triangulation of the cells, but make sure that the triangles are consistently oriented
-	// - only write triangles with valid vertices and an edge length smaller then edgeThreshold
-
-	// TODO: Get number of vertices
-	// Use image size
-	unsigned int nVertices = width * height;
+    // TODO: Get number of vertices
+    unsigned int nVertices = width * height;
 
 
-	// TODO: Determine number of valid faces
-	unsigned nFaces = 0;
+    // TODO: Determine number of valid faces
+    unsigned nFaces = 0; //(width - 1) * (height - 1) * 2;
+    std::vector<Face*> faces;
+    for (unsigned int u = 0; u < width-1; u++)
+    {
+        for (unsigned int v = 0; v < height-1; v++)
+        {
+            unsigned int idx = v * width + u;
+            if (vertices[idx].position(0) != MINF && vertices[idx].position(1) != MINF &&
+                vertices[idx].position(2) != MINF && vertices[idx].position(3) != MINF)
+            {
+                // triangularization of 4 pixels as 2 triangles:
+                /*
+                 * shape:
+                    v1 -- v3
+                    |    / |
+                    |   /  |
+                    |  /   |
+                    | /    |
+                    v2 -- v4
+                    with right hand rule, indices for 2 triangles becomes:
+                    v1 v2 v3 and v3 v2 v4
+                 */
+                unsigned int v1_idx = v * width + u;
+                unsigned int v2_idx = (v+1) * width + u;
+                unsigned int v3_idx = v * width + u + 1;
+                unsigned int v4_idx = (v+1) * width + u+1;
+                Vertex v1 = vertices[v1_idx];
+                Vertex v2 = vertices[v2_idx];
+                Vertex v3 = vertices[v3_idx];
+                Vertex v4 = vertices[v4_idx];
 
-	std::vector<Face*> faces;
 
-    for (int i = 0; i < height-1; i++) {
-        for (int j = 0; j < width-1; j++){
-            // Get a square (two triangles can be formed from the square, at most)
-            // Calculate the vertex indices so that they are always neighboring
-            // and correspond to the corners of a square
+                // v1 v2 v3 triangle
+                if ((v1.position - v2.position).norm() < edgeThreshold &&
+                    (v2.position - v3.position).norm() < edgeThreshold &&
+                    (v1.position - v3.position).norm() < edgeThreshold)
+                {
+                    Face* face = new Face(v1_idx, v2_idx, v3_idx);
+                    faces.push_back(face);
+                    nFaces++;
 
-            int v1_id = width * i + j;
-            Vertex v1 = vertices[v1_id];
-            int v2_id = width * i + (j+1);
-            Vertex v2 = vertices[v2_id];
-            int v3_id = width * (i+1) + j;
-            Vertex v3 = vertices[v3_id];
-            int v4_id = width * (i+1) + (j+1);
-            Vertex v4 = vertices[v4_id];
+                }
 
-            // Upper triangle
-            if (isValidTriangle(v1.position, v2.position, v3.position, edgeThreshold)){
-                nFaces++;
-                Face* face = new Face(v1, v1_id, v2, v2_id, v3, v3_id);
-                faces.push_back(face);
+                // v3 v2 v4 triangle
+                if ((v3.position - v2.position).norm() < edgeThreshold &&
+                    (v2.position - v4.position).norm() < edgeThreshold &&
+                    (v3.position - v4.position).norm() < edgeThreshold)
+                {
+                    Face* face = new Face(v3_idx, v2_idx, v4_idx);
+                    faces.push_back(face);
+                    nFaces++;
+                }
+
+
             }
-            // Lower triangle
-            if (isValidTriangle(v2.position, v3.position, v4.position, edgeThreshold)){
-                nFaces++;
-                Face* face = new Face(v2, v2_id, v3, v3_id, v4, v4_id);
-                faces.push_back(face);
+        }
+    }
+
+
+
+    // Write off file
+    std::ofstream outFile(filename);
+    if (!outFile.is_open()) return false;
+
+    // write header
+    outFile << "COFF" << std::endl;
+    //outFile << "# numVertices numFaces numEdges" << std::endl;
+    outFile << nVertices << " " << nFaces << " 0" << std::endl;
+
+    // TODO: save vertices
+    //outFile << "# list of vertices" << std::endl;
+    //outFile << "# X Y Z R G B A" << std::endl;
+    for (int u = 0; u < width; u++) {
+        for (int v = 0; v < height; v++) {
+            int idx = v * width + u;
+            if (vertices[idx].position(0) != MINF && vertices[idx].position(1) != MINF &&
+                vertices[idx].position(2) != MINF && vertices[idx].position(3) != MINF) {
+                outFile << vertices[idx].position(0) << " ";
+                outFile << vertices[idx].position(1) << " ";
+                outFile << vertices[idx].position(2) << " ";
+                outFile << (int) vertices[idx].color(0) << " ";
+                outFile << (int) vertices[idx].color(1) << " ";
+                outFile << (int) vertices[idx].color(2) << " ";
+                outFile << (int) vertices[idx].color(3) << std::endl;
+            } else {
+                outFile << 0.0 << " " << 0.0 << " " << 0.0 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << std::endl;
             }
         }
     }
 
+    // TODO: save valid faces
+    //outFile << "# list of faces" << std::endl;
+    //outFile << "# nVerticesPerFace idx0 idx1 idx2 ..." << std::endl;
+    /*for (int u = 0; u < width-1; u++)
+    {
+        for (int v = 0; v < height-1; v++)
+        {*/
+            // triangularization of 4 pixels as 2 triangles:
+            /*
+             * shape:
+                v1 -- v3
+                |    / |
+                |   /  |
+                |  /   |
+                | /    |
+                v2 -- v4
+                with right hand rule, indices for 2 triangles becomes:
+                v1 v2 v3 and v3 v2 v4
+             */
+         /*   int v1 = v * width + u;
+            int v2 = (v+1) * width + u;
+            int v3 = v * width + u + 1;
+            int v4 = (v+1) * width + u+1;
 
-	// Write off file
-	std::ofstream outFile(filename);
-	if (!outFile.is_open()) return false;
-
-	// write header
-	outFile << "COFF" << std::endl;
-	outFile << nVertices << " " << nFaces << " 0" << std::endl;
+            //if (isValidTriangle())
 
 
-	// TODO: save vertices
-    for (int i = 0; i < nVertices; i++) {
-        if(isValidVertex(vertices[i])){
-            outFile << vertices[i].position[0] << " " << vertices[i].position[1] << " " << vertices[i].position[2] << " "
-                    << (int)vertices[i].color[0] << " " << (int)vertices[i].color[1] << " " << (int)vertices[i].color[2] << " " << (int)vertices[i].color[3]
-                    << std::endl;
+
+
         }
-        else{
+    }*/
 
-            outFile << "0.0 0.0 0.0 "
-                    << (int)vertices[i].color[0] << " " << (int)vertices[i].color[1] << " " << (int)vertices[i].color[2] << " " << (int)vertices[i].color[3]
-                    << std::endl;
-        }
-    }
+         for (Face* face : faces)
+         {
+             outFile << "3 " << face->v1_idx << " ";
+             outFile << face->v2_idx << " ";
+             outFile << face->v3_idx << std::endl;
+         }
 
-	// TODO: save valid faces
-    for(const auto face : faces){
-        outFile << "3 " << face->v1_id << " " << face->v2_id << " " << face->v3_id << std::endl;
-    }
 
 	// close file
 	outFile.close();
@@ -192,46 +232,39 @@ int main()
 		// vertices[idx].position = Vector4f(MINF, MINF, MINF, MINF);
 		// vertices[idx].color = Vector4uc(0,0,0,0);
 		// otherwise apply back-projection and transform the vertex to world space, use the corresponding color from the colormap
+
 		Vertex* vertices = new Vertex[sensor.GetDepthImageWidth() * sensor.GetDepthImageHeight()];
+		int depthImageWidth =sensor.GetDepthImageWidth();
+		int depthImageHeight = sensor.GetDepthImageHeight();
 
-        // Back-project the image pixels to the world space
-        for (int h = 0; h < sensor.GetDepthImageHeight(); h++) {
-            for (int w = 0; w < sensor.GetDepthImageWidth(); w++) {
-                int index = sensor.GetDepthImageWidth() * h + w;
+		Matrix4f depthIntrinsicsInv = MatrixXf::Identity(4, 4);
+		depthIntrinsicsInv(0, 0) = 1/fX;
+	    depthIntrinsicsInv(1, 1) = 1/fY;
+	    depthIntrinsicsInv(0, 2) = -cX/fX;
+	    depthIntrinsicsInv(1, 2) = -cY/fY;
+		for (int u = 0; u < depthImageWidth; u++)
+        {
+		    for (int v = 0; v < depthImageHeight; v++)
+            {
+                int idx =v*depthImageWidth + u;
+		        if (depthMap[v*depthImageWidth + u] != MINF)
+                {
 
-
-                if (depthMap[index] != MINF){
-                    // Depth information exists for the vertex, apply-back projection
-                    float depth = depthMap[index];
-
-                    // Inverse projection: (depth*x, depth*y, depth)
-                    float x = depth * w;
-                    float y = depth * h;
-
-                    // Scale the screen space coordinates (u, v) by depth
-                    Vector3f pinhole_coord = Vector3f(x, y, depth);
-
-                    Matrix3f depthIntrinsicsInv = depthIntrinsics.inverse();
-                    MatrixXf identity = MatrixXf::Identity(4,3);
-
-                    Vector4f real_coord = trajectoryInv * depthExtrinsicsInv * identity * depthIntrinsicsInv * pinhole_coord;
-                    real_coord[3] = 1.0;
-
-                    vertices[index].position = real_coord;
-                    vertices[index].color[0] = colorMap[4 * index];
-                    vertices[index].color[1] = colorMap[4 * index + 1];
-                    vertices[index].color[2] = colorMap[4 * index + 2];
-                    vertices[index].color[3] = colorMap[4 * index + 3];
+		            Vector4f pixelCoord(u* depthMap[idx], v*depthMap[idx], depthMap[idx], 1);
+		            vertices[idx].position = trajectoryInv * depthExtrinsicsInv * depthIntrinsicsInv * pixelCoord;
+		            vertices[idx].color(0) = (unsigned char) colorMap[4*idx];
+                    vertices[idx].color(1) = (unsigned char) colorMap[4*idx+1];
+                    vertices[idx].color(2) = (unsigned char) colorMap[4*idx+2];
+                    vertices[idx].color(3) = (unsigned char) colorMap[4*idx+3];
                 }
-                else{
-                    // Depth value is invalid, set the vertex position and color to default values
-                    vertices[index].color    = Vector4uc(0,0,0,0);
-                    vertices[index].position = Vector4f(MINF, MINF, MINF, MINF);
-
+		        else
+                {
+                    vertices[idx].position = Vector4f(MINF, MINF, MINF, MINF);
+                    vertices[idx].color = Vector4uc(0,0,0,0);
                 }
-
+		        //std::cout << "position (" << u << ", " << v << ")" << vertices[idx].position << std::endl;
+		        //std::cout << "color (" << u << ", " << v << ")" << vertices[idx].color << std::endl;
             }
-
         }
 
 
