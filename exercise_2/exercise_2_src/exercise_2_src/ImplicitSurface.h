@@ -72,11 +72,7 @@ public:
 		Eigen::Vector3f n = m_pointcloud.GetNormals()[idx];
 
 		// TODO: implement the evaluation using Hoppe's method (see lecture slides)
-		// mi.cast<float>()
-		//Eigen::Vector3d p_double = p.cast<double>();
-        //Eigen::Vector3d n_double = n.cast<double>();
 		double f = (x - p).dot(n);
-		//printf("hoppe f: idx: %d, f: %f\n", idx, f);
 		return f;
 	}
 
@@ -156,7 +152,16 @@ public:
 		// the following parameters are the coeffients for the linear and the constant part
 		// the centers of the RBFs are the first m_numCenters sample points (use m_funcSamp.m_pos[i] to access them)
 		// hint: Eigen provides a norm() function to compute the l2-norm of a vector (e.g. see macro phi(i,j))
-		double result = 0.0;
+		Eigen::Vector3d b(m_coefficents(m_numCenters), m_coefficents(m_numCenters+1), m_coefficents(m_numCenters+2));
+		double linear_term = b.dot(_x);
+		double d = m_coefficents(m_numCenters+3);
+		double sum_term = 0.0;
+		for (int i = 0; i < m_numCenters; i++)
+        {
+            sum_term += m_coefficents[i]* std::pow((m_funcSamp.m_pos[i] - _x).norm(), 3);
+        }
+		double result = sum_term + linear_term + d;
+
 
 
 		return result;
@@ -183,13 +188,25 @@ private:
 		// note that all sample points (both on and off surface points) are stored in m_funcSamp
 		// you can access matrix elements using for example A(i,j) for the i-th row and j-th column
 		// similar you access the elements of the vector b, e.g. b(i) for the i-th element
-
-
-
-
-
-
-
+        for (int i = 0; i < 2*m_numCenters; i++)
+        {
+            b(i) = m_funcSamp.m_val[i];
+        }
+        for (int i = 0; i < 2*m_numCenters; i++)
+        {
+            A(i, m_numCenters+3) = 1;
+        }
+		for (int i = 0; i < 2*m_numCenters; i++)
+		{
+            for (int j = 0; j < m_numCenters; j++)
+            {
+                A(i, j) = phi(i, j);
+            }
+            for (int j = 0; j < 3; j++)
+            {
+                A(i, j+m_numCenters) = m_funcSamp.m_pos[i][j];
+            }
+        }
 
 		// build the system matrix and the right hand side of the normal equation
 		m_systemMatrix = A.transpose() * A;
