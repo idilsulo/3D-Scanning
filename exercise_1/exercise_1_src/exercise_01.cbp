@@ -8,84 +8,98 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src"/>
+				<Option working_dir="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src"/>
+				<Option working_dir="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src"/>
+				<Option working_dir="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="exercise_01">
-				<Option output="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/exercise_01" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src"/>
+				<Option output="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/exercise_01" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/usr/local/include/eigen3"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 exercise_01"/>
-					<CompileFile command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 exercise_01"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="exercise_01/fast">
-				<Option output="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/exercise_01" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src"/>
+				<Option output="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/exercise_01" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/usr/local/include/eigen3"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 exercise_01/fast"/>
-					<CompileFile command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 exercise_01/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/Eigen.h">
+		<Unit filename="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/Eigen.h">
 			<Option target="exercise_01"/>
 		</Unit>
-		<Unit filename="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/FreeImageHelper.cpp">
+		<Unit filename="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/FreeImageHelper.cpp">
 			<Option target="exercise_01"/>
 		</Unit>
-		<Unit filename="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/FreeImageHelper.h">
+		<Unit filename="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/FreeImageHelper.h">
 			<Option target="exercise_01"/>
 		</Unit>
-		<Unit filename="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/VirtualSensor.h">
+		<Unit filename="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/VirtualSensor.h">
 			<Option target="exercise_01"/>
 		</Unit>
-		<Unit filename="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/main.cpp">
+		<Unit filename="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/main.cpp">
 			<Option target="exercise_01"/>
 		</Unit>
-		<Unit filename="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/ex1/exercise_1_src/CMakeLists.txt">
+		<Unit filename="/Users/zumrudshukurlu/Desktop/dersler20202/3dmocap/3D-Scanning/exercise_1/exercise_1_src/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

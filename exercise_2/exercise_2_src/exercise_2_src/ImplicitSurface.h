@@ -23,7 +23,8 @@ public:
 	double Eval(const Eigen::Vector3d& _x)
 	{
 		// TODO: implement the implicit sphere formula using the member variables m_center and m_radius
-		return 0.0;
+		double f = (_x - m_center).squaredNorm() - m_radius*m_radius;
+		return f;
 	}
 
 private:
@@ -42,7 +43,8 @@ public:
 	double Eval(const Eigen::Vector3d& _x)
 	{
 		// TODO: implement the implicit torus formula using the  variables m_center, m_radius (radius of the ring) and the radius m_a (small radius)
-		return 0.0;
+		double f = std::pow(((_x - m_center).squaredNorm() + m_radius*m_radius - m_a*m_a), 2) - 4*m_radius*m_radius * (std::pow(_x[0]-m_center[0], 2) + std::pow(_x[1]-m_center[1], 2));
+		return f;
 	}
 
 private:
