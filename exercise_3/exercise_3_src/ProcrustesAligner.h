@@ -52,32 +52,28 @@ private:
         Matrix3f crossCovariance = Matrix3f::Identity();
 
         int sizeSourcePoints = sourcePoints.size();
-        //MatrixXf X(3, sizeSourcePoints);
-        //MatrixXf XHat(3, sizeSourcePoints);
-        MatrixXf X(3, sizeSourcePoints);
-        MatrixXf XHat(3, sizeSourcePoints);
+        MatrixXf X(sizeSourcePoints, 3);
+        MatrixXf XHat(sizeSourcePoints, 3);
         for (int i = 0; i < sizeSourcePoints; i++)
         {
             Vector3f x_i = sourcePoints[i] - sourceMean;
             Vector3f xHat_i = targetPoints[i] - targetMean;
 
-            X.block(0, i, 3, 1) = x_i;
-            XHat.block(0, i, 3, 1) = xHat_i;
+            X.block(i, 0, 1, 3) = x_i.transpose();
+            XHat.block(i, 0, 1, 3) = xHat_i.transpose();
         }
 
-        crossCovariance = X * (XHat.transpose());
+        crossCovariance = X.transpose() * XHat;
 
         JacobiSVD<MatrixXf> svd(crossCovariance, ComputeThinU | ComputeThinV);
         svd.compute(crossCovariance);
-
-        std::cout << "size U: " << svd.matrixU().size() << "\nsize V: " << svd.matrixV().size() << std::endl;
 
         rotation = svd.matrixV() * svd.matrixU().transpose();
         Matrix3f mirror = Matrix3f::Identity();
         mirror(2, 2) = -1;
         if (rotation.determinant() == -1)
         {
-            rotation = (svd.matrixU()) * mirror * (svd.matrixV().transpose());
+            rotation = (svd.matrixV()) * mirror * (svd.matrixU().transpose());
         }
         return rotation;
 	}
