@@ -4,7 +4,11 @@
 class ProcrustesAligner {
 public:
 	Matrix4f estimatePose(const std::vector<Vector3f>& sourcePoints, const std::vector<Vector3f>& targetPoints) {
-		ASSERT(sourcePoints.size() == targetPoints.size() && "The number of source and target points should be the same, since every source point is matched with corresponding target point.");
+	    //printf("source size: %d, target size: %d", sourcePoints.size(), targetPoints.size());
+	    std::cout << "source size: " << sourcePoints.size() << " target size: " << targetPoints.size() << std::endl;
+		ASSERT((sourcePoints.size() == targetPoints.size()) && ("The number of source and target points should be the same, since every source point is matched with corresponding target point."));
+		//ASSERT((sourcePoints.size() == targetPoints.size()) && "DenseBase::resize() does not actually allow to resize.");
+
 
 		// We estimate the pose between source and target points using Procrustes algorithm.
 		// Our shapes have the same scale, therefore we don't estimate scale. We estimated rotation and translation
@@ -20,6 +24,8 @@ public:
 		// You can access parts of the matrix with .block(start_row, start_col, num_rows, num_cols) = elements
 
 		Matrix4f estimatedPose = Matrix4f::Identity();
+		estimatedPose.block(0, 0, 3, 3) = rotation;
+		estimatedPose.block(0, 3, 3, 1) = translation;
 		return estimatedPose;
 	}
 
@@ -27,7 +33,14 @@ private:
 	Vector3f computeMean(const std::vector<Vector3f>& points) {
 		// TODO: Compute the mean of input points.
 
+		std::cout << "mean\n";
 		Vector3f mean = Vector3f::Zero();
+		int size = points.size();
+		for (Vector3f point : points)
+        {
+		    mean += point;
+        }
+		mean = mean / size;
         return mean;
 	}
 
@@ -36,14 +49,51 @@ private:
 		// To compute the singular value decomposition you can use JacobiSVD() from Eigen.
 		// Important: The covariance matrices should contain mean-centered source/target points.
 
-        Matrix3f rotation = Matrix3f::Identity(); 
+		std::cout << "rotation\n";
+
+        ASSERT(sourcePoints.size() == targetPoints.size() && "The number of source and target points should be the same.");
+        Matrix3f rotation = Matrix3f::Identity();
+        //Matrix3f crossCovariance = Matrix3f::Identity();
+
+        //for (Vector3f sourcePoint : sourcePoints, Vector3f targetPoint : targetPoints)
+        //Vector
+        int sizeSourcePoints = sourcePoints.size();
+        MatrixXf X(3, sizeSourcePoints);
+        MatrixXf XHat(3, sizeSourcePoints);
+        for (int i = 0; i < sizeSourcePoints; i++)
+        {
+            Vector3f x_i = sourcePoints[i] - sourceMean;
+            Vector3f xHat_i = targetPoints[i] - targetMean;
+
+            X.block(0, i, 3, 1) = x_i;
+            XHat.block(0, i, 3, 1) = xHat_i;
+            //(sourcePoints[i] - sourceMean).transpose()*(targetPoints[i] - targetMean);
+        }
+
+        Matrix3f crossCovariance = X * (XHat.transpose());
+
+        JacobiSVD<MatrixXf> svd(crossCovariance, ComputeFullU | ComputeFullV);
+        svd.compute(crossCovariance);
+
+        std::cout << "size U: " << svd.matrixU().size() << "\nsize V: " << svd.matrixV().size() << std::endl;
+
+        rotation = (svd.matrixU()) * (svd.matrixV().transpose());
+        Matrix3f mirror = Matrix3f::Identity();
+        mirror(2, 2) = -1;
+        if (rotation.determinant() == -1)
+        {
+            rotation = svd.matrixU() * mirror * svd.matrixV().transpose();
+        }
+        std::cout << "size rotation: " << rotation.size() << std::endl;
         return rotation;
 	}
 
 	Vector3f computeTranslation(const Vector3f& sourceMean, const Vector3f& targetMean, const Matrix3f& rotation) {
 		// TODO: Compute the translation vector from source to target points.
-		
+	    std::cout << "translation\n";
         Vector3f translation = Vector3f::Zero();
+        translation = (-1)*(rotation * sourceMean) + targetMean;
+        std::cout << "translation 2\n";
         return translation;
 	}
 };
