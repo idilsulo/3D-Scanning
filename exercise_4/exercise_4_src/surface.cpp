@@ -9,7 +9,7 @@
 struct SurfaceCostFunction
 {
     SurfaceCostFunction(const Point3D& point_)
-            : point(point_)
+        : point(point_)
     {
     }
 
