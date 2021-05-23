@@ -16,24 +16,11 @@ struct RegistrationCostFunction
     template<typename T>
     bool operator()(const T* const theta, const T* const t_x, const T* const t_y, T* error) const
     {
-        /*
-        Eigen::Vector2d p(pointP.x, pointP.y);
-        Eigen::Vector2d q(pointQ.x, pointQ.y);
-        Eigen::Matrix2d rotationMatrix;
-        rotationMatrix(0, 0) = cos(theta[0]);
-        rotationMatrix(0, 1) = (-1) * sin(theta[0]);
-        rotationMatrix(1, 0) = sin(theta[0]);
-        rotationMatrix(1, 1) = cos(theta[0]);
-        Eigen::Vector2d translation(t_x[0], t_y[0]);
-       // auto transformation;
-        error[0] = weight.w * (rotationMatrix * p + translation - q).squaredNorm();
-        */
-        auto transformation_x = (cos(theta[0]) * pointP.x) - (sin(theta[0]) * pointP.y) + t_x[0] - pointQ.x;
-        auto transformation_y = (sin(theta[0]) * pointP.x) + (cos(theta[0]) * pointP.y) + t_y[0] - pointQ.y;
-        auto squaredNorm = pow(transformation_x, 2.0) + pow(transformation_y, 2.0);
+        auto difference_x = (cos(theta[0]) * pointP.x) - (sin(theta[0]) * pointP.y) + t_x[0] - pointQ.x;
+        auto difference_y = (sin(theta[0]) * pointP.x) + (cos(theta[0]) * pointP.y) + t_y[0] - pointQ.y;
+        auto squaredNorm = pow(difference_x, 2.0) + pow(difference_y, 2.0);
         error[0] = weight.w * squaredNorm;
-                return true;
-
+        return true;
     }
 
 private:
@@ -68,17 +55,14 @@ int main(int argc, char** argv)
 	ceres::Problem problem;
 
 	// TODO: For each weighted correspondence create one residual block
-	auto N = 0;
+
 	auto sizePoints1 = points1.size();
     auto sizePoints2 = points2.size();
     auto sizeWeights = weights.size();
+    auto N = sizePoints1;
     if (sizePoints1 != sizePoints2 || sizeWeights != sizePoints1 || sizeWeights != sizePoints2)
     {
         N = std::min({sizePoints1, sizePoints2, sizeWeights});
-    }
-    else
-    {
-        N = sizePoints1;
     }
 
     for (int i = 0; i < N; i++)

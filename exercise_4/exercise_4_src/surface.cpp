@@ -16,10 +16,8 @@ struct SurfaceCostFunction
     template<typename T>
     bool operator()(const T* const a, const T* const b, const T* const c, T* residual) const
     {
-
         residual[0] = point.z - (pow(point.x, 2.0)/a[0] - pow(point.y, 2.0)/b[0])/c[0];
         return true;
-
     }
 
 private:
