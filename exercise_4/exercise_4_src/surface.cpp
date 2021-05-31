@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 	google::InitGoogleLogging(argv[0]);
 
 	// Read 3D surface data points and define the parameters of the problem
-	const std::string file_path = "../../data/points_surface.txt";
+	const std::string file_path = "../data/points_surface.txt";
 	const auto points = read_points_from_file<Point3D>(file_path);
 	
 	const double a_initial = 1.0;

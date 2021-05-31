@@ -196,3 +196,8 @@ Temporary Items
 exercise_1/data/
 exercise_1/exercise_1_src/.idea/
 *.idea/
+exercise_5/exercise_05_src/libs/*
+exercise_5/exercise_05_src/libs/
+exercise_5/exercise_05_src/libs/Flann/
+exercise_5/exercise_05_src/libs/glog/
+exercise_5/exercise_05_src/libs/ceres-solver/

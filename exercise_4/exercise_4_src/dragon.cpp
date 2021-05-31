@@ -35,13 +35,13 @@ int main(int argc, char** argv)
 	google::InitGoogleLogging(argv[0]);
 
 	// Read data points and the weights, and define the parameters of the problem
-	const std::string file_path_1 = "../../data/points_dragon_1.txt";
+	const std::string file_path_1 = "../data/points_dragon_1.txt";
 	const auto points1 = read_points_from_file<Point2D>(file_path_1);
 	
-	const std::string file_path_2 = "../../data/points_dragon_2.txt";
+	const std::string file_path_2 = "../data/points_dragon_2.txt";
 	const auto points2 = read_points_from_file<Point2D>(file_path_2);
 	
-	const std::string file_path_weights = "../../data/weights_dragon.txt";
+	const std::string file_path_weights = "../data/weights_dragon.txt";
 	const auto weights = read_points_from_file<Weight>(file_path_weights);
 	
 	const double angle_initial = 0.0;

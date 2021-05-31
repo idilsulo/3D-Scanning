@@ -4,7 +4,6 @@
 class ProcrustesAligner {
 public:
 	Matrix4f estimatePose(const std::vector<Vector3f>& sourcePoints, const std::vector<Vector3f>& targetPoints) {
-	    std::cout << "source size: " << sourcePoints.size() << " target size: " << targetPoints.size() << std::endl;
 		ASSERT((sourcePoints.size() == targetPoints.size()) && ("The number of source and target points should be the same, since every source point is matched with corresponding target point."));
 
 

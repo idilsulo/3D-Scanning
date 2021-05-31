@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 	google::InitGoogleLogging(argv[0]);
 
 	// Read data points
-	const std::string file_path = "../../data/points_gaussian.txt";
+	const std::string file_path = "../data/points_gaussian.txt";
 	const auto points = read_points_from_file<Point2D>(file_path);
 
 	// Good initial values make the optimization easier
