@@ -123,31 +123,21 @@ public:
 		sourcePointCeres[0] = T(m_sourcePoint[0]);
         sourcePointCeres[1] = T(m_sourcePoint[1]);
         sourcePointCeres[2] = T(m_sourcePoint[2]);
-        //T* targetPointCeres = new T(3);
-        //fillVector(m_sourcePoint, sourcePointCeres);
-        //fillVector(m_targetPoint, targetPointCeres);
 
-        //T* Mp_s = new T(3);
         T temp[3];
         ceres::AngleAxisRotatePoint(rotation, sourcePointCeres, temp);
         T outputPoint[3];
         outputPoint[0] = temp[0] + translation[0];
         outputPoint[1] = temp[1] + translation[1];
         outputPoint[2] = temp[2] + translation[2];
-        //poseIncrement.apply(sourcePointCeres, Mp_s);
-        //auto distanceBefore = m_sourcePoint - m_targetPoint;
-       // auto distanceAfter =
+
         auto r0 = T(m_weight)*pow((outputPoint[0] - T(m_targetPoint[0])), 2);
         auto r1 = T(m_weight)*pow((outputPoint[1] - T(m_targetPoint[1])), 2);
         auto r2 = T(m_weight)*pow((outputPoint[2] - T(m_targetPoint[2])), 2);
 		residuals[0] = r0;
 		residuals[1] = r1;
 		residuals[2] = r2;
-		/*
-        residuals[0] = T(m_targetPoint[0]) - outputPoint[0];
-        residuals[1] = T(m_targetPoint[1]) - outputPoint[1];
-        residuals[2] = T(m_targetPoint[2]) - outputPoint[2];
-		*/
+
 		return true;
 	}
 
@@ -192,24 +182,13 @@ public:
         sourcePointCeres[0] = T(m_sourcePoint[0]);
         sourcePointCeres[1] = T(m_sourcePoint[1]);
         sourcePointCeres[2] = T(m_sourcePoint[2]);
-        //T* targetPointCeres = new T(3);
-        //fillVector(m_sourcePoint, sourcePointCeres);
-        //fillVector(m_targetPoint, targetPointCeres);
+
         T temp[3];
         ceres::AngleAxisRotatePoint(rotation, sourcePointCeres, temp);
         T outputPoint[3];
         outputPoint[0] = temp[0] + translation[0];
         outputPoint[1] = temp[1] + translation[1];
         outputPoint[2] = temp[2] + translation[2];
-
-        //T* Mp_s = new T(3);
-        //poseIncrement.apply(sourcePointCeres, Mp_s);
-        //auto r0 = T(m_weight)*pow((outputPoint[0] - T(m_targetPoint[0])), 2);
-        //auto r1 = T(m_weight)*pow((outputPoint[1] - T(m_targetPoint[1])), 2);
-        //auto r2 = T(m_weight)*pow((outputPoint[2] - T(m_targetPoint[2])), 2);
-        //residuals[0] = r0;
-        //residuals[1] = r1;
-        //residuals[2] = r2;
 
         auto r0 = T(m_targetNormal[0]) *(outputPoint[0] - T(m_targetPoint[0]));
         auto r1 = T(m_targetNormal[1]) *(outputPoint[1] - T(m_targetPoint[1]));
@@ -305,7 +284,6 @@ protected:
 				if (angle > M_PI/3.0)
 				{
                     match.idx = -1;
-                    //match.weight = -1;
                 }
 				
 				
@@ -403,10 +381,7 @@ private:
 				// TODO: Create a new point-to-point cost function and add it as constraint (i.e. residual block) 
 				// to the Ceres problem.
 
-				//double pose[6] = {0, 1, 2, 0, 0, 0};
 				double* pose = poseIncrement.getData();
-				//double** args;
-				//args[0] = pose;
 
 				ceres::CostFunction* pointCostFunction = PointToPointConstraint::create(sourcePoint, targetPoint, weight);
 			    problem.AddResidualBlock(pointCostFunction, nullptr, pose);
