@@ -112,18 +112,6 @@ public:
 		// The resulting 3D residual should be stored in the residuals array. To apply the pose 
 		// increment (pose parameters) to the source point, you can use the PoseIncrement class.
 		// Important: Ceres automatically squares the cost function.
-		/*
-		 *         T p[3];
-        T point[3];
-        point[0]=T(_xyz.x);
-        point[1]=T(_xyz.y);
-        point[2]=T(_xyz.z);
-                 AngleAxisRotatePoint (camera, point, p); // calculate RP
-                 p [0] + = camera [3]; p [1] + = camera [4]; p [2] + = camera [5]; // camera coordinate 2
-        residual[0] = T(_uvw.x)-p[0];
-        residual[1] = T(_uvw.y)-p[1];
-        residual[2] = T(_uvw.z)-p[2];
-		 */
 		//T* sourcePointCeres = new T(3);
 		T* m_array = poseIncrement.getData();
         T* rotation;
@@ -194,17 +182,38 @@ public:
 		// The resulting 1D residual should be stored in the residuals array. To apply the pose 
 		// increment (pose parameters) to the source point, you can use the PoseIncrement class.
 		// Important: Ceres automatically squares the cost function.
-        T* sourcePointCeres = new T(3);
-        T* targetPointCeres = new T(3);
-        fillVector(m_sourcePoint, sourcePointCeres);
+        T* m_array = poseIncrement.getData();
+        T* rotation;
+        T* translation;
+        rotation = m_array;
+        translation = m_array+3;
+
+        T sourcePointCeres[3];
+        sourcePointCeres[0] = T(m_sourcePoint[0]);
+        sourcePointCeres[1] = T(m_sourcePoint[1]);
+        sourcePointCeres[2] = T(m_sourcePoint[2]);
+        //T* targetPointCeres = new T(3);
+        //fillVector(m_sourcePoint, sourcePointCeres);
         //fillVector(m_targetPoint, targetPointCeres);
+        T temp[3];
+        ceres::AngleAxisRotatePoint(rotation, sourcePointCeres, temp);
+        T outputPoint[3];
+        outputPoint[0] = temp[0] + translation[0];
+        outputPoint[1] = temp[1] + translation[1];
+        outputPoint[2] = temp[2] + translation[2];
 
-        T* Mp_s = new T(3);
-        poseIncrement.apply(sourcePointCeres, Mp_s);
+        //T* Mp_s = new T(3);
+        //poseIncrement.apply(sourcePointCeres, Mp_s);
+        //auto r0 = T(m_weight)*pow((outputPoint[0] - T(m_targetPoint[0])), 2);
+        //auto r1 = T(m_weight)*pow((outputPoint[1] - T(m_targetPoint[1])), 2);
+        //auto r2 = T(m_weight)*pow((outputPoint[2] - T(m_targetPoint[2])), 2);
+        //residuals[0] = r0;
+        //residuals[1] = r1;
+        //residuals[2] = r2;
 
-        auto r0 = T(m_targetNormal[0]) *(Mp_s[0] - T(m_targetPoint[0]));
-        auto r1 = T(m_targetNormal[1]) *(Mp_s[1] - T(m_targetPoint[1]));
-        auto r2 = T(m_targetNormal[2]) *(Mp_s[2] - T(m_targetPoint[2]));
+        auto r0 = T(m_targetNormal[0]) *(outputPoint[0] - T(m_targetPoint[0]));
+        auto r1 = T(m_targetNormal[1]) *(outputPoint[1] - T(m_targetPoint[1]));
+        auto r2 = T(m_targetNormal[2]) *(outputPoint[2] - T(m_targetPoint[2]));
 		residuals[0] = sqrt(r0*r0 + r1*r1 + r2*r2);
 		
 		return true;
