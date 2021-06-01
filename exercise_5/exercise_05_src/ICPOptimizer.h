@@ -483,21 +483,63 @@ private:
 			const auto& n = targetNormals[i];
 
 			// TODO: Add the point-to-plane constraints to the system
-			
+            b[4*i] = (n.dot(d)) - (n.dot(s));
+            // Block of size (p,q), starting at (i,j)
+            // matrix.block(i,j,p,q);
+            //A.block(4*i, 0, 1, 3) = (s.cross(n)).transpose();
+            A.block(4*i, 0, 1, 3) = (n.cross(s)).transpose();
+            A.block(4*i, 3, 1, 3) = n.transpose();
 
 			// TODO: Add the point-to-point constraints to the system
-			
+			Matrix3f skewSymmetric;
+			skewSymmetric << 0, s[2], -s[1], -s[2], 0, s[0], s[1], -s[0], 0;
+        //    skewSymmetric << 0, -s[2], s[1], s[2], 0, -s[0], -s[1], s[0], 0;
 
-			// TODO: Optionally, apply a higher weight to point-to-plane correspondences
-			
+			A.block(4*i+1, 0, 3, 3) = skewSymmetric;
+            A.block(4*i+1, 3, 3, 3) = Matrix3f::Identity();
+            Vector3f d_minus_s = d-s;
+            b[4*i+1] =d_minus_s[0];
+            b[4*i+2] =d_minus_s[1];
+            b[4*i+3] =d_minus_s[2];
+            // TODO: Optionally, apply a higher weight to point-to-plane correspondences
+
 			
 		}
 
 		// TODO: Solve the system
 		VectorXf x(6);
 
-		
-		float alpha = x(0), beta = x(1), gamma = x(2);
+		JacobiSVD<MatrixXf> svd(A, ComputeFullU | ComputeFullV);
+		svd.compute(A);
+
+		auto U_transpose = (svd.matrixU()).transpose();
+		auto V = svd.matrixV();
+        double epsilon = 1.e-8;
+        //int nRows = A.rows();
+        //int nCols = A.cols();
+        MatrixXf A_pseudoInverse = MatrixXf::Zero(6, 4 * nPoints);
+        MatrixXf singularValues = svd.singularValues();
+        MatrixXf singularValuesInverse = MatrixXf::Zero(6, 4 * nPoints);
+        for (int i = 0; i < 6; i++)
+        {
+            if (singularValues(i) > epsilon)
+            {
+                singularValues(i) = 1.0 / singularValues(i);
+            }
+            else
+            {
+                singularValues(i) = 0;
+            }
+        }
+        for (int i = 0; i < 6; i++)
+        {
+            singularValuesInverse(i, i) = singularValues(i);
+        }
+        A_pseudoInverse = V * singularValuesInverse * U_transpose;
+
+        x = A_pseudoInverse * b;
+
+        float alpha = x(0), beta = x(1), gamma = x(2);
 
 		// Build the pose matrix
 		Matrix3f rotation = AngleAxisf(alpha, Vector3f::UnitX()).toRotationMatrix() *
@@ -508,6 +550,13 @@ private:
 
 		// TODO: Build the pose matrix using the rotation and translation matrices
 		Matrix4f estimatedPose = Matrix4f::Identity();
+		Matrix4f translationMatrix = Matrix4f::Identity();
+		Matrix4f rotationMatrix = Matrix4f::Identity();
+		rotationMatrix.block(0, 0, 3, 3) = rotation;
+		translationMatrix.block(0, 3, 3, 1) = translation;
+		//estimatedPose.block(0, 0, 3, 3) = rotation;
+		//estimatedPose.block(0, 3, 3, 1) = translation;
+        estimatedPose = translationMatrix * rotationMatrix;
 		
 
 		return estimatedPose;
