@@ -112,7 +112,6 @@ public:
 		// The resulting 3D residual should be stored in the residuals array. To apply the pose 
 		// increment (pose parameters) to the source point, you can use the PoseIncrement class.
 		// Important: Ceres automatically squares the cost function.
-		//T* sourcePointCeres = new T(3);
 		T* m_array = poseIncrement.getData();
         T* rotation;
         T* translation;
@@ -193,8 +192,8 @@ public:
         auto r0 = T(m_targetNormal[0]) *(outputPoint[0] - T(m_targetPoint[0]));
         auto r1 = T(m_targetNormal[1]) *(outputPoint[1] - T(m_targetPoint[1]));
         auto r2 = T(m_targetNormal[2]) *(outputPoint[2] - T(m_targetPoint[2]));
-		residuals[0] = sqrt(r0*r0 + r1*r1 + r2*r2);
-		
+        residuals[0] = T(m_weight) * sqrt(r0*r0 + r1*r1 + r2*r2);
+
 		return true;
 	}
 
@@ -380,12 +379,9 @@ private:
 
 				// TODO: Create a new point-to-point cost function and add it as constraint (i.e. residual block) 
 				// to the Ceres problem.
-
 				double* pose = poseIncrement.getData();
-
 				ceres::CostFunction* pointCostFunction = PointToPointConstraint::create(sourcePoint, targetPoint, weight);
 			    problem.AddResidualBlock(pointCostFunction, nullptr, pose);
-				
 
 				if (m_bUsePointToPlaneConstraints) {
 					const auto& targetNormal = targetNormals[match.idx];
@@ -395,10 +391,8 @@ private:
 
 					// TODO: Create a new point-to-plane cost function and add it as constraint (i.e. residual block) 
 					// to the Ceres problem.
-
                     ceres::CostFunction* planeCostFunction = PointToPlaneConstraint::create(sourcePoint, targetPoint, targetNormal, weight);
                     problem.AddResidualBlock(planeCostFunction, nullptr, pose);
-					
 				}
 			}
 		}
@@ -484,16 +478,14 @@ private:
 
 			// TODO: Add the point-to-plane constraints to the system
             b[4*i] = (n.dot(d)) - (n.dot(s));
-            // Block of size (p,q), starting at (i,j)
+            // Block of size (p,q), starting at (i,j):
             // matrix.block(i,j,p,q);
-            //A.block(4*i, 0, 1, 3) = (s.cross(n)).transpose();
-            A.block(4*i, 0, 1, 3) = (n.cross(s)).transpose();
+            A.block(4*i, 0, 1, 3) = (s.cross(n)).transpose();
             A.block(4*i, 3, 1, 3) = n.transpose();
 
 			// TODO: Add the point-to-point constraints to the system
 			Matrix3f skewSymmetric;
 			skewSymmetric << 0, s[2], -s[1], -s[2], 0, s[0], s[1], -s[0], 0;
-        //    skewSymmetric << 0, -s[2], s[1], s[2], 0, -s[0], -s[1], s[0], 0;
 
 			A.block(4*i+1, 0, 3, 3) = skewSymmetric;
             A.block(4*i+1, 3, 3, 3) = Matrix3f::Identity();
@@ -515,8 +507,6 @@ private:
 		auto U_transpose = (svd.matrixU()).transpose();
 		auto V = svd.matrixV();
         double epsilon = 1.e-8;
-        //int nRows = A.rows();
-        //int nCols = A.cols();
         MatrixXf A_pseudoInverse = MatrixXf::Zero(6, 4 * nPoints);
         MatrixXf singularValues = svd.singularValues();
         MatrixXf singularValuesInverse = MatrixXf::Zero(6, 4 * nPoints);
@@ -535,8 +525,8 @@ private:
         {
             singularValuesInverse(i, i) = singularValues(i);
         }
-        A_pseudoInverse = V * singularValuesInverse * U_transpose;
 
+        A_pseudoInverse = V * singularValuesInverse * U_transpose;
         x = A_pseudoInverse * b;
 
         float alpha = x(0), beta = x(1), gamma = x(2);
@@ -550,14 +540,8 @@ private:
 
 		// TODO: Build the pose matrix using the rotation and translation matrices
 		Matrix4f estimatedPose = Matrix4f::Identity();
-		Matrix4f translationMatrix = Matrix4f::Identity();
-		Matrix4f rotationMatrix = Matrix4f::Identity();
-		rotationMatrix.block(0, 0, 3, 3) = rotation;
-		translationMatrix.block(0, 3, 3, 1) = translation;
-		//estimatedPose.block(0, 0, 3, 3) = rotation;
-		//estimatedPose.block(0, 3, 3, 1) = translation;
-        estimatedPose = translationMatrix * rotationMatrix;
-		
+		estimatedPose.block(0, 0, 3, 3) = rotation;
+		estimatedPose.block(0, 3, 3, 1) = translation;
 
 		return estimatedPose;
 	}
